@@ -1,19 +1,12 @@
 {
     "items": [
       {
-        "id": "p1",
         "name": "Item 1",
-        "description": "Description 1"
+        "imageUrl": "https://www.cj.co.kr/images/theKitchen/PHON/0000001657/0000006119/0000001657.jpg"
       },
       {
-        "id": "p2",
-        "name": "Item 2",
-        "description": "Description 2"
-      },
-      {
-        "id": "p3",
-        "name": "Item 3",
-        "description": "Description 3"
+        "name": "Sushi",
+        "imageUrl": "https://rimage.gnst.jp/livejapan.com/public/article/detail/a/00/00/a0000370/img/basic/a0000370_main.jpg?20201002142956&q=80&rw=750&rh=536"
       }
     ]
   }
