@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,24 +16,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'What to eat',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+        useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'What to eat'),
+      home: const HomePage(title: 'What to eat'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -44,12 +39,19 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  var image;
-  void _fetchImage() {}
+class _HomePageState extends State<HomePage> {
+  List _items = [];
+
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/sample.json');
+    final data = await json.decode(response);
+    setState(() {
+      _items = data['items'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +83,27 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('What to eat?', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            FilledButton(
-                onPressed: () {
-                  print('Pressed');
-                },
-                child: const Text('Press me')),
+            _items.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: _items.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          key: ValueKey(_items[index]["id"]),
+                          margin: const EdgeInsets.all(10),
+                          color: Colors.amber.shade100,
+                          child: ListTile(
+                            leading: Text(_items[index]["id"]),
+                            title: Text(_items[index]["name"]),
+                            subtitle: Text(_items[index]["description"]),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : Container(),
+            const SizedBox(height: 10),
+            FilledButton(onPressed: readJson, child: const Text('Press me')),
           ],
         ),
       ),
